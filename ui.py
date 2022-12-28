@@ -11,7 +11,7 @@ class UI:
         self.health_bar_rect = pygame.Rect(10, 10, HEALTH_BAR_WIDTH, BAR_HEIGHT)
         self.energy_bar_rect = pygame.Rect(10, 34, ENERGY_BAR_WIDTH, BAR_HEIGHT)
 
-        self.weapon_list = ['corgi.png', 'ninja.png', 'octopus.png']
+        self.weapon_list = ['corgi.png', 'graham.png', 'reuben.png']
         self.weapon_surfs = ['']*len(self.weapon_list)
         self.weapon_rects = ['']*len(self.weapon_list)
 

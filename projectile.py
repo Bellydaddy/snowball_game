@@ -7,14 +7,10 @@ from settings import *
 class Projectile(pygame.sprite.Sprite):
     def __init__(self, player, groups, vector, selected_weapon):
         super().__init__(groups)
-
-        self.image = pygame.image.load(selected_weapon).convert_alpha()
         self.straight_vector = pygame.math.Vector2(1, 0)
-        self.image = pygame.transform.rotate(self.image, vector.angle_to(self.straight_vector))
-        self.image = pygame.transform.scale(self.image, (55, 55))
+        self.image = pygame.transform.rotate(pygame.image.load(selected_weapon).convert_alpha(), vector.angle_to(self.straight_vector))
         self.rect = self.image.get_rect()
-        self.rect.centerx = player.rect.centerx
-        self.rect.centery += player.rect.centery
+        self.rect.center = (player.rect.centerx, player.rect.centery)
         self.display_surface = pygame.display.get_surface()
         self.speed = 7
         self.vector = vector

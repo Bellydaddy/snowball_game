@@ -5,14 +5,16 @@ from settings import *
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos, groups, obstacle_sprites, shoot_func):
         super().__init__(groups)
-        self.image = pygame.image.load('graphics/test/player.png').convert_alpha()
+        self.display_surface = pygame.display.get_surface()
 
+        #Projectile variables
         self.shoot_arrow = shoot_func
         self.selected_weapon = "corgi.png"
+
+        #player info
+        self.image = pygame.image.load('graphics/test/player.png').convert_alpha()
         self.rect = self.image.get_rect(topleft = pos)
         self.hitbox = self.rect.inflate(0, -26)
-
-        self.display_surface = pygame.display.get_surface()
         #movement
         self.direction = pygame.math.Vector2()
         self.shooting = False
