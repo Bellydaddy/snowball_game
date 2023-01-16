@@ -60,8 +60,6 @@ class UI:
                     player.selected_weapon = self.weapon_list[i]
 
 
-
-
     def display(self, player):
         self.show_bar(player.health, player.stats['health'], self.health_bar_rect, HEALTH_COLOR)
         self.show_bar(player.mana, player.stats['mana'], self.energy_bar_rect, MANA_COLOR)

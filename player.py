@@ -1,8 +1,8 @@
 import pygame
 from support import import_folder
 from settings import *
-
-class Player(pygame.sprite.Sprite):
+from entity import Entity
+class Player(Entity):
     def __init__(self, pos, groups, obstacle_sprites, shoot_func):
         super().__init__(groups)
         self.display_surface = pygame.display.get_surface()
@@ -10,19 +10,14 @@ class Player(pygame.sprite.Sprite):
         #Projectile variables
         self.shoot_arrow = shoot_func
         self.selected_weapon = "corgi.png"
+        self.weapons = {'corgi.png': 50, 'graham.png': 40, 'reuben.png':20}
 
         #player info
         self.image = pygame.image.load('graphics/test/player.png').convert_alpha()
         self.rect = self.image.get_rect(topleft = pos)
         self.hitbox = self.rect.inflate(0, -26)
 
-        #movement
-        self.direction = pygame.math.Vector2()
         self.shooting = False
-
-        #animation
-        self.frame_index = 0
-        self.animation_speed = 0.15
 
         #graphics
         self.import_player_assets()
@@ -40,7 +35,6 @@ class Player(pygame.sprite.Sprite):
         self.mana = self.stats['mana']
         self.exp = 123
         self.speed = self.stats['speed']
-
         self.obstacle_sprites = obstacle_sprites
 
     def import_player_assets(self):
@@ -85,16 +79,17 @@ class Player(pygame.sprite.Sprite):
                 self.attacking = True
                 self.attack_time = pygame.time.get_ticks()
 
-
-
-
-
-
     def cooldowns(self):
         current_time = pygame.time.get_ticks()
         if self.attacking:
             if current_time - self.attack_time >= self.attack_cooldown:
                 self.attacking = False
+
+    def get_full_weapon_damage(self, attack_type):
+        if attack_type in self.weapons:
+            return self.weapons[attack_type]
+        else:
+            return 0
 
     def get_status(self):
         #idle
@@ -113,41 +108,13 @@ class Player(pygame.sprite.Sprite):
             if 'attack' in self.status:
                 self.status = self.status.replace('_attack', '')
 
-    def move(self, speed):
-        if self.direction.magnitude() != 0:
-            self.direction = self.direction.normalize()
-        self.hitbox.x += self.direction.x*speed
-        self.collision('horizontal')
-        self.hitbox.y += self.direction.y*speed
-        self.collision('vertical')
-        self.rect.center = self.hitbox.center
-
     def shoot(self, cursor):
         self.shooting = True
         pygame.draw.line(pygame.display.get_surface(), 'black', (640, 360), cursor, width=2)
-
         if not pygame.mouse.get_pressed()[0]:
             vector = pygame.math.Vector2((cursor[0]-640)*-1,(cursor[1]-360)*-1)
             self.shoot_arrow(vector, self.selected_weapon)
             self.shooting = False
-
-
-
-    def collision(self, direction):
-        if direction == 'horizontal':
-            for sprite in self.obstacle_sprites:
-                if sprite.hitbox.colliderect(self.hitbox):
-                    if self.direction.x > 0:
-                        self.hitbox.right = sprite.hitbox.left
-                    if self.direction.x < 0:
-                        self.hitbox.left = sprite.hitbox.right
-        if direction == 'vertical':
-            for sprite in self.obstacle_sprites:
-                if sprite.hitbox.colliderect(self.hitbox):
-                    if self.direction.y > 0:
-                        self.hitbox.bottom = sprite.hitbox.top
-                    if self.direction.y < 0:
-                        self.hitbox.top = sprite.hitbox.bottom
 
     def animate(self):
         animation = self.animations[self.status]
@@ -155,7 +122,7 @@ class Player(pygame.sprite.Sprite):
         if self.frame_index >= len(animation):
             self.frame_index = 0
         self.image = animation[int(self.frame_index)]
-        self.rect = self.image.get_rect(center = self.hitbox.center)
+        self.rect = self.image.get_rect(center=self.hitbox.center)
 
     def update(self):
         self.input()

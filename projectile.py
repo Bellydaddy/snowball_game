@@ -14,6 +14,8 @@ class Projectile(pygame.sprite.Sprite):
         self.display_surface = pygame.display.get_surface()
         self.speed = 7
         self.vector = vector
+        self.damage = 50
+        self.sprite_type = selected_weapon
 
     def move(self):
         self.rect.centerx += self.speed*self.vector.normalize().x
