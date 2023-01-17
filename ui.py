@@ -65,5 +65,4 @@ class UI:
         self.show_bar(player.mana, player.stats['mana'], self.energy_bar_rect, MANA_COLOR)
         self.show_weapons(self.weapon_list, player.selected_weapon)
         self.select_weapon(player)
-        print(player.selected_weapon)
 

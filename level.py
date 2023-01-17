@@ -72,8 +72,9 @@ class level:
                         else:
                             target_sprite.get_damage(self.player, attack_sprite.selectedweapon)
 
-    def damage_player(self, amount, attack_type):
+    def damage_player(self, amount, attack_type, direction):
         if self.player.vulnerable:
+            self.player.hit_reaction(direction)
             self.player.health -= amount
             self.player.vulnerable = False
             self.player.hurt_time = pygame.time.get_ticks()

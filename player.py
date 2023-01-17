@@ -30,7 +30,12 @@ class Player(Entity):
         self.draw = False
         self.vulnerable = True
         self.hurt_time = None
-        self.invulnerability_duration = 500
+        self.invulnerability_duration = 700
+
+
+        #knockback
+        self.knockback = False
+        self.knockback_duration = 300
         #stats
         self.stats = {'health': 100, 'mana':100, 'attack':10, 'speed':4}
         self.health = self.stats['health']
@@ -51,7 +56,7 @@ class Player(Entity):
 
     def input(self):
         keys = pygame.key.get_pressed()
-        if not self.attacking:
+        if not self.attacking and not self.knockback:
             #movement input
             if keys[pygame.K_w]:
                 self.direction.y = -1
@@ -81,6 +86,8 @@ class Player(Entity):
                 self.attacking = True
                 self.attack_time = pygame.time.get_ticks()
 
+
+
     def cooldowns(self):
         current_time = pygame.time.get_ticks()
         if self.attacking:
@@ -90,6 +97,10 @@ class Player(Entity):
         if not self.vulnerable:
             if current_time-self.hurt_time>=self.invulnerability_duration:
                 self.vulnerable = True
+
+        if self.knockback:
+            if current_time-self.hurt_time>=self.knockback_duration:
+                self.knockback = False
 
     def get_full_weapon_damage(self, attack_type):
         if attack_type in self.weapons:
@@ -122,7 +133,17 @@ class Player(Entity):
             self.shoot_arrow(vector, self.selected_weapon)
             self.shooting = False
 
+    def hit_reaction(self, direction):
+        if not self.knockback and self.vulnerable:
+            self.direction = direction
+            self.knockback = True
+
+
     def animate(self):
+        if self.knockback:
+            self.speed = 15
+        else:
+            self.speed = self.stats['speed']
         animation = self.animations[self.status]
         self.frame_index += self.animation_speed
         if self.frame_index >= len(animation):
