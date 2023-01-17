@@ -28,7 +28,9 @@ class Player(Entity):
         self.attack_cooldown = 400
         self.attack_time = None
         self.draw = False
-
+        self.vulnerable = True
+        self.hurt_time = None
+        self.invulnerability_duration = 500
         #stats
         self.stats = {'health': 100, 'mana':100, 'attack':10, 'speed':4}
         self.health = self.stats['health']
@@ -85,6 +87,10 @@ class Player(Entity):
             if current_time - self.attack_time >= self.attack_cooldown:
                 self.attacking = False
 
+        if not self.vulnerable:
+            if current_time-self.hurt_time>=self.invulnerability_duration:
+                self.vulnerable = True
+
     def get_full_weapon_damage(self, attack_type):
         if attack_type in self.weapons:
             return self.weapons[attack_type]
@@ -123,6 +129,13 @@ class Player(Entity):
             self.frame_index = 0
         self.image = animation[int(self.frame_index)]
         self.rect = self.image.get_rect(center=self.hitbox.center)
+
+        #flicker
+        if not self.vulnerable:
+            alpha = self.wave_value()
+            self.image.set_alpha(alpha)
+        else:
+            self.image.set_alpha(255)
 
     def update(self):
         self.input()

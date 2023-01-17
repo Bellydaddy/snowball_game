@@ -13,11 +13,8 @@ class level:
         self.display_surface = pygame.display.get_surface()
         self.visible_sprites = YSortCameraGroup()
         self.obstacle_sprites = pygame.sprite.Group()
-
-
         self.attack_sprites = pygame.sprite.Group()
         self.attackable_sprites = pygame.sprite.Group()
-
         self.create_map()
         self.ui = UI()
 
@@ -57,23 +54,30 @@ class level:
                                 elif col == '391' : monster_name = 'spirit'
                                 elif col == '392' : monster_name = 'raccoon'
                                 else: monster_name = 'squid'
-                                Enemy(monster_name, (x, y), [self.visible_sprites, self.attackable_sprites], self.obstacle_sprites)
-
+                                Enemy(monster_name, (x, y), [self.visible_sprites, self.attackable_sprites], self.obstacle_sprites, self.damage_player)
 
     def shoot_arrow(self, vector, selected_weapon):
-        self.arrow = Projectile(self.player, groups=[self.visible_sprites, self.attack_sprites], vector=vector, selected_weapon=selected_weapon)
-
+        self.arrow = Projectile(self.player, groups=[self.visible_sprites, self.attack_sprites], vector=vector, selected_weapon=selected_weapon, sprite_type='Projectile')
 
     def player_attack_logic(self):
         if self.attack_sprites:
             for attack_sprite in self.attack_sprites:
                 collision_sprites = pygame.sprite.spritecollide(attack_sprite, self.attackable_sprites, False)
                 if collision_sprites:
+                    if attack_sprite.sprite_type == 'Projectile':
+                        attack_sprite.kill()
                     for target_sprite in collision_sprites:
                         if target_sprite.sprite_type == 'grass':
                             target_sprite.kill()
                         else:
-                            target_sprite.get_damage(self.player, attack_sprite.sprite_type)
+                            target_sprite.get_damage(self.player, attack_sprite.selectedweapon)
+
+    def damage_player(self, amount, attack_type):
+        if self.player.vulnerable:
+            self.player.health -= amount
+            self.player.vulnerable = False
+            self.player.hurt_time = pygame.time.get_ticks()
+            #spawn particles later
 
     def run(self):
         self.visible_sprites.custom_draw(self.player)
