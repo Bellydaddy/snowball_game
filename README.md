@@ -1,6 +1,6 @@
 # snowball_game
 
-Created a 2-D Legend of Zelda-inspired game using the PyGame library for educational purposes. Learned a lot while making this project, such as reinforcing OOP principles, directed self-learning, working through unfamiliar libaries and their documentation.
+Created a 2-D Legend of Zelda-inspired game using the PyGame library for educational purposes. Learned a lot while making this project, such as reinforcing OOP principles, inheritance, directed self-learning, working through unfamiliar libaries and their documentation.
 
 Most of the structure of the code is from a tutorial from the Youtube channel Clear Code, with a link and credit below
 https://www.youtube.com/watch?v=QU1pPzEGrqw&themeRefresh=1
