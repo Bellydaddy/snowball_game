@@ -62,7 +62,7 @@ class level:
     def player_attack_logic(self):
         if self.attack_sprites:
             for attack_sprite in self.attack_sprites:
-                collision_sprites = pygame.sprite.spritecollide(attack_sprite, self.attackable_sprites, False)
+                collision_sprites = pygame.sprite.spritecollide(attack_sprite, self.attackable_sprites, False, collided=pygame.sprite.collide_rect_ratio(0.5))
                 if collision_sprites:
                     if attack_sprite.sprite_type == 'Projectile':
                         attack_sprite.kill()
